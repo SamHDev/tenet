@@ -36,7 +36,7 @@ Token algorithms are decided by a enum: `TokenAlgorithm`
 - `HS512`
 ### Example
 
-```
+```rust
 use serde::{Serialize, Deserialize};
 use jwt::{Token, TokenAlgorithm, SignedToken};
 
@@ -46,7 +46,7 @@ use jwt::{Token, TokenAlgorithm, SignedToken};
 struct MyToken {
     foo: u8,
     bar: bool,
-    baz: String
+    baz: String,
 }
 
 // create a key to sign and verify tokens.
