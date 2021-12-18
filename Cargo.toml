@@ -2,7 +2,7 @@
 name = "jwt_watchflow"
 version = "0.1.0"
 edition = "2021"
-description = "A godawful JWT implmentation for watchflow project"
+description = "A godawful JWT implementation for watchflow project"
 keywords = ["jwt", "pile_of_shit", "watchflow"]
 
 [dependencies.serde]
