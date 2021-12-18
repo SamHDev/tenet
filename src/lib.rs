@@ -1,4 +1,4 @@
-//! #JWT_Watchflow
+//! # JWT Watchflow
 //! A godawful jwt implementation
 //!
 //! ```toml
