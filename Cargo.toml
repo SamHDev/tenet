@@ -1,0 +1,27 @@
+[package]
+name = "jwt_watchflow"
+version = "0.1.0"
+edition = "2021"
+description = "A godawful JWT implmentation for watchflow project"
+keywords = ["jwt", "pile_of_shit", "watchflow"]
+
+[dependencies.serde]
+version = "1.0.131"
+features = ["derive"]
+
+[dependencies]
+serde_json = "1.0.73"
+base64 = "0.13.0"
+
+[dependencies.hmac]
+version = "0.12.0"
+optional = true
+
+[dependencies.sha2]
+version = "0.10.0"
+optional = true
+
+[features]
+HS256 = ["hmac", "sha2"]
+HS512 = ["hmac", "sha2"]
+default = ["HS256"]
