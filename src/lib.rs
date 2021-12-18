@@ -51,7 +51,7 @@
 //! }
 //!
 //! // create a key to sign and verify tokens.
-//! let token_key = b"VERY_SECURE_KEY";
+//! let token_key = b"VERY_SECURE_KEY".to_vec();
 //!
 //! // create a new token, sign it, and get the string representation
 //! let token = Token::create(
