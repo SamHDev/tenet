@@ -1,9 +1,9 @@
-# JWT Watchflow
+# TENET
 A godawful jwt implementation
 
 ```toml
 [dependencies.jwt]
-package="jwt_watchflow"
+package="tenet"
 version = "*"
 features = ["HS256"]
 ```

@@ -1,9 +1,13 @@
 [package]
-name = "jwt_watchflow"
-version = "0.1.0"
+name = "tenet"
+version = "0.0.1"
 edition = "2021"
-description = "A godawful JWT implementation for watchflow project"
-keywords = ["jwt", "pile_of_shit", "watchflow"]
+description = "A godawful JWT implementation"
+keywords = ["jwt", "poor_implentation"]
+license="AGPL-3.0"
+license-file="LICENSE"
+authors = ["Sam Huddart <me@samh.dev>"]
+repository = "https://git.samhdev.net/samhdev/git"
 
 [dependencies.serde]
 version = "1.0.131"
