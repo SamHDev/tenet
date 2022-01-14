@@ -71,8 +71,8 @@
 
 use std::fmt::{Debug, Formatter};
 use std::ops::{Deref, DerefMut};
-use serde::{Serialize, Deserialize};
-use serde::de::DeserializeOwned;
+use serde::{Serialize, Deserialize, Serializer, Deserializer};
+use serde::de::{DeserializeOwned, Visitor};
 
 #[cfg(feature="hmac")]
 use hmac::Mac;
@@ -178,6 +178,9 @@ impl TokenAlgorithm {
         match &self {
             #[cfg(feature="HS256")]
             TokenAlgorithm::HS256 => "HS256",
+            #[cfg(feature="HS512")]
+            TokenAlgorithm::HS512 => "HS512",
+
             TokenAlgorithm::Other => "Unsupported",
         }
     }
@@ -187,6 +190,15 @@ impl TokenAlgorithm {
         match &self {
             #[cfg(feature="HS256")]
             TokenAlgorithm::HS256 => {
+                let mut hash = match hmac::Hmac::<sha2::Sha256>::new_from_slice(&key) {
+                    Ok(x) => x,
+                    Err(_) => return Err(TokenError::InvalidKey)
+                };
+                hash.update(payload.as_ref());
+                return Ok(hash.finalize().into_bytes().as_slice().to_vec())
+            }
+            #[cfg(feature="HS512")]
+            TokenAlgorithm::HS512 => {
                 let mut hash = match hmac::Hmac::<sha2::Sha256>::new_from_slice(&key) {
                     Ok(x) => x,
                     Err(_) => return Err(TokenError::InvalidKey)
@@ -212,7 +224,17 @@ impl TokenAlgorithm {
                 Ok(hash.verify_slice(sig).is_ok())
             }
 
-            TokenAlgorithm::Other => Err(TokenError::UnsupportedAlgorithm)
+            #[cfg(feature="HS512")]
+            TokenAlgorithm::HS512 => {
+                let mut hash = match hmac::Hmac::<sha2::Sha512>::new_from_slice(&key) {
+                    Ok(x) => x,
+                    Err(_) => return Err(TokenError::InvalidKey)
+                };
+                hash.update(payload.as_ref());
+                Ok(hash.verify_slice(sig).is_ok())
+            }
+
+            TokenAlgorithm::Other => Err(TokenError::UnsupportedAlgorithm),
         }
     }
 }
@@ -421,5 +443,49 @@ impl<T> Deref for Token<T> {
 impl<T> DerefMut for Token<T> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.payload
+    }
+}
+
+impl Serialize for SignedToken {
+    fn serialize<S: Serializer>(&self, serializer: S) -> std::result::Result<S::Ok, S::Error> {
+        serializer.serialize_str(&self.string())
+    }
+}
+
+impl<'de> Deserialize<'de> for SignedToken {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error> where D: Deserializer<'de> {
+        deserializer.deserialize_str(SignedTokenVisitor)
+    }
+}
+
+struct SignedTokenVisitor;
+
+impl<'de> Visitor<'de> for SignedTokenVisitor {
+    type Value = SignedToken;
+
+    fn expecting(&self, formatter: &mut Formatter) -> std::fmt::Result {
+        formatter.write_str("a valid token string")
+    }
+
+    fn visit_str<E>(self, v: &str) -> Result<Self::Value, E> where E: serde::de::Error {
+        match SignedToken::decode(v) {
+            Ok(token) => Ok(token),
+            Err(error) => Err(serde::de::Error::custom(match error {
+                TokenError::InvalidPayload(e) => return Err(E::custom(e.to_string())),
+
+                TokenError::UnsupportedAlgorithm => "unsupported algorithm",
+                TokenError::InvalidKey => "invalid key",
+                TokenError::InvalidHeader => "invalid header",
+                TokenError::InvalidToken => "invalid token",
+                TokenError::InvalidSignature => "invalid signature",
+            }))
+        }
+    }
+}
+
+#[cfg(feature="HS256")]
+impl Default for TokenAlgorithm {
+    fn default() -> Self {
+        TokenAlgorithm::HS256
     }
 }
