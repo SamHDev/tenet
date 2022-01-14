@@ -1,6 +1,11 @@
 # TENET
 A godawful jwt implementation
 
+![Crates.io](https://img.shields.io/crates/v/tenet?style=for-the-badge)
+![docs.rs](https://img.shields.io/docsrs/tenet?style=for-the-badge)
+![Crates.io](https://img.shields.io/crates/d/tenet?style=for-the-badge)
+![Crates.io](https://img.shields.io/crates/l/tenet?style=for-the-badge)
+
 ```toml
 [dependencies.jwt]
 package="tenet"
