@@ -6,7 +6,7 @@ description = "A godawful JWT implementation"
 keywords = ["jwt", "poor_implentation"]
 license="AGPL-3.0"
 authors = ["Sam Huddart <me@samh.dev>"]
-repository = "https://git.samhdev.net/samhdev/jwt"
+repository = "https://github.com/samhdev/tenet"
 
 [dependencies.serde]
 version = "1.0.131"
