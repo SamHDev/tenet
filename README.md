@@ -1,10 +1,9 @@
 # TENET
 A godawful jwt implementation
 
-![Crates.io](https://img.shields.io/crates/v/tenet?style=for-the-badge)
-![docs.rs](https://img.shields.io/docsrs/tenet?style=for-the-badge)
-![Crates.io](https://img.shields.io/crates/d/tenet?style=for-the-badge)
-![Crates.io](https://img.shields.io/crates/l/tenet?style=for-the-badge)
+[![Crates.io](https://img.shields.io/crates/v/tenet?style=for-the-badge)](https://crates.io/crates/tenet/)
+[![docs.rs](https://img.shields.io/docsrs/tenet?style=for-the-badge)](https://docs.rs/tenet/)
+[![Crates.io](https://img.shields.io/crates/l/tenet?style=for-the-badge)](https://choosealicense.com/licenses/agpl-3.0/)
 
 ```toml
 [dependencies.jwt]

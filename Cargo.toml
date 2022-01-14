@@ -1,12 +1,12 @@
 [package]
 name = "tenet"
-version = "0.0.2"
+version = "0.0.3"
 edition = "2021"
 description = "A godawful JWT implementation"
 keywords = ["jwt", "poor_implentation"]
 license="AGPL-3.0"
 authors = ["Sam Huddart <me@samh.dev>"]
-repository = "https://git.samhdev.net/samhdev/git"
+repository = "https://git.samhdev.net/samhdev/jwt"
 
 [dependencies.serde]
 version = "1.0.131"
