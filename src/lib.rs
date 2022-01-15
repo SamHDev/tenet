@@ -76,7 +76,6 @@ use serde::de::{DeserializeOwned, Visitor};
 
 #[cfg(feature="hmac")]
 use hmac::Mac;
-use http::StatusCode;
 
 const DOT: u8 = '.' as u8;
 static TYPE: &'static str = "JWT";
@@ -501,7 +500,7 @@ impl Default for TokenAlgorithm {
 
 #[cfg(feature="http")]
 impl Into<http::StatusCode> for TokenError {
-    fn into(self) -> StatusCode {
+    fn into(self) -> http::StatusCode {
         match self {
             TokenError::UnsupportedAlgorithm => http::StatusCode::BAD_REQUEST,
             TokenError::InvalidKey => http::StatusCode::BAD_REQUEST,
