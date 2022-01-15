@@ -76,6 +76,7 @@ use serde::de::{DeserializeOwned, Visitor};
 
 #[cfg(feature="hmac")]
 use hmac::Mac;
+use http::StatusCode;
 
 const DOT: u8 = '.' as u8;
 static TYPE: &'static str = "JWT";
@@ -406,6 +407,14 @@ impl SignedToken {
     pub fn verify(&self, key: &[u8]) -> Result<bool, TokenError> {
         self.algorithm.verify(&self.body, &self.signature, key)
     }
+
+    /// verify a signed token and then deserialize into a typed token
+    pub fn parse_verify<T: DeserializeOwned>(&self, key: &[u8]) -> Result<Token<T>, TokenError> {
+        if !self.verify(key)? {
+            return Err(TokenError::InvalidSignature)
+        }
+        self.parse()
+    }
 }
 
 impl<T: Debug> Debug for Token<T> {
@@ -487,5 +496,19 @@ impl<'de> Visitor<'de> for SignedTokenVisitor {
 impl Default for TokenAlgorithm {
     fn default() -> Self {
         TokenAlgorithm::HS256
+    }
+}
+
+#[cfg(feature="http")]
+impl Into<http::StatusCode> for TokenError {
+    fn into(self) -> StatusCode {
+        match self {
+            TokenError::UnsupportedAlgorithm => http::StatusCode::BAD_REQUEST,
+            TokenError::InvalidKey => http::StatusCode::BAD_REQUEST,
+            TokenError::InvalidHeader => http::StatusCode::BAD_REQUEST,
+            TokenError::InvalidPayload(_) => http::StatusCode::BAD_REQUEST,
+            TokenError::InvalidToken => http::StatusCode::BAD_REQUEST,
+            TokenError::InvalidSignature => http::StatusCode::UNAUTHORIZED,
+        }
     }
 }
